@@ -1,0 +1,14 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "cam.pele.sgm.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "refmap": "sgm.mixins.refmap.json",
+    "mixins": [
+        "BlockBehaviourMixin"
+    ],
+    "client": [],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

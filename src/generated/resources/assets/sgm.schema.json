@@ -1,0 +1,148 @@
+{
+  "type": "object",
+  "$defs": {
+    "Bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "min": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "RuleAction": {
+      "type": "string",
+      "enum": [
+        "DENY",
+        "ALLOW_NORMAL",
+        "ALLOW_RESPAWN",
+        "ALLOW_DECAY",
+        "ALLOW_NO_DROP"
+      ]
+    },
+    "RuleDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/RuleAction"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timer": {
+          "type": "integer"
+        }
+      }
+    },
+    "RuleSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "break": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RuleDefinition"
+          }
+        },
+        "place": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RuleDefinition"
+          }
+        }
+      }
+    },
+    "SgmSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "debug_mode": {
+          "type": "boolean"
+        },
+        "decay_time": {
+          "type": "integer"
+        },
+        "respawn_time": {
+          "type": "integer"
+        },
+        "tick_interval": {
+          "type": "integer"
+        }
+      }
+    },
+    "ZoneConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/ZoneType"
+        },
+        "bounds": {
+          "$ref": "#/$defs/Bounds"
+        },
+        "decay_time": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "integer"
+        },
+        "respawn_time": {
+          "type": "integer"
+        },
+        "rules": {
+          "$ref": "#/$defs/RuleSet"
+        },
+        "structure_blacklist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "structure_whitelist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ZoneType": {
+      "type": "string",
+      "enum": [
+        "STRUCTURE",
+        "CUSTOM"
+      ]
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "additionalProperties": false,
+  "description": "Hover over properties to see details.",
+  "properties": {
+    "settings": {
+      "$ref": "#/$defs/SgmSettings"
+    },
+    "zones": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ZoneConfig"
+      }
+    }
+  },
+  "title": "SGM Configuration Info"
+}

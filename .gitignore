@@ -1,0 +1,36 @@
+# Gradle Build Artifacts
+.gradle/
+build/
+bin/
+out/
+
+# IDE Configuration
+.idea/
+.vscode/
+*.iml
+.settings/
+.classpath
+.project
+*.ipr
+*.iws
+
+# Minecraft Run & Logs
+run/
+run-data/
+logs/
+crash-reports/
+debug.log
+debug-*.log.gz
+latest.log
+
+# System
+.DS_Store
+Thumbs.db
+
+# Private User Data
+user.json
+user.properties
+
+src/generated/resources/.cache/
+
+# Note: gradle-wrapper.jar and gradle-wrapper.properties are intentionally KEPT.
