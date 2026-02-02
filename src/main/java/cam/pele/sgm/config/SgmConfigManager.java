@@ -18,7 +18,7 @@ public class SgmConfigManager {
     private static final Path CONFIG_PATH = FMLPaths.CONFIGDIR.get().resolve("sgm.json");
 
     public static final String SCHEMA_FILENAME = "sgm.schema.json";
-    private static final String SCHEMA_URL = "https://raw.githubusercontent.com/Pele/StructureGriefManager/main/src/generated/resources/"
+    private static final String SCHEMA_URL = "https://raw.githubusercontent.com/CamillePele/StructureGriefManager/main/src/generated/resources/assets/"
             + SCHEMA_FILENAME;
 
     public static SgmConfig CONFIG;
@@ -59,28 +59,40 @@ public class SgmConfigManager {
         SgmConfig config = new SgmConfig();
         config.schema = SCHEMA_URL;
 
-        // Settings default are already set in constructor
+        // Settings (Defaults matched with user request)
+        config.settings.tickInterval = 20;
+        config.settings.respawnTime = 600;
+        config.settings.decayTime = 200;
+        config.settings.debugMode = false;
 
-        // Add Example Zone
+        // Zone: Global Village Protection
         ZoneConfig zone = new ZoneConfig();
-        zone.name = "Example Zone";
+        zone.name = "Global Village Protection";
         zone.type = ZoneType.STRUCTURE;
         zone.priority = 10;
         zone.structureWhitelist.add("minecraft:.*village.*");
-        zone.respawnTime = 1200; // Example override
+        zone.structureBlacklist.add("minecraft:village_desert");
 
         // Rules
-        RuleDefinition breakRule = new RuleDefinition();
-        breakRule.targets = Collections.singletonList("#c:ores");
-        breakRule.action = RuleAction.DENY;
+        // 1. Break Rules
+        RuleDefinition denyChests = new RuleDefinition();
+        denyChests.targets = Collections.singletonList("#c:chests");
+        denyChests.action = RuleAction.DENY;
 
-        RuleDefinition placeRule = new RuleDefinition();
-        placeRule.targets = Collections.singletonList("*");
-        placeRule.action = RuleAction.ALLOW_DECAY;
-        placeRule.timer = 200;
+        RuleDefinition allowRespawn = new RuleDefinition();
+        allowRespawn.targets = Collections.singletonList("*");
+        allowRespawn.action = RuleAction.ALLOW_RESPAWN;
 
-        zone.rules.breakRules.add(breakRule);
-        zone.rules.placeRules.add(placeRule);
+        zone.rules.breakRules.add(denyChests);
+        zone.rules.breakRules.add(allowRespawn);
+
+        // 2. Place Rules
+        RuleDefinition allowDecay = new RuleDefinition();
+        allowDecay.targets = Collections.singletonList("*");
+        allowDecay.action = RuleAction.ALLOW_DECAY;
+        allowDecay.timer = 60; // As requested
+
+        zone.rules.placeRules.add(allowDecay);
 
         config.zones.add(zone);
 

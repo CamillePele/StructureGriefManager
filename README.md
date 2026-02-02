@@ -38,9 +38,12 @@ It supports **JSON Schema**, offering autocompletion in generic code editors (VS
 **Example Configuration:**
 ```json
 {
-  "tick_interval": 20,
-  "default_respawn_time": 600,
-  "default_decay_time": 200,
+  "settings": {
+    "tick_interval": 20,
+    "respawn_time": 600,
+    "decay_time": 200,
+    "debug_mode": false
+  },
   "zones": [
     {
       "name": "Global Village Protection",
@@ -49,22 +52,31 @@ It supports **JSON Schema**, offering autocompletion in generic code editors (VS
       "structure_whitelist": [
         "minecraft:.*village.*"
       ],
+      "structure_blacklist": [
+        "minecraft:village_desert"
+      ],
       "rules": {
-        "break_rules": [
+        "break": [
           {
-            "targets": ["#c:chests"],
+            "targets": [
+              "#c:chests"
+            ],
             "action": "DENY"
           },
           {
-            "targets": ["*"],
+            "targets": [
+              "*"
+            ],
             "action": "ALLOW_RESPAWN"
           }
         ],
-        "place_rules": [
+        "place": [
           {
-            "targets": ["*"],
+            "targets": [
+              "*"
+            ],
             "action": "ALLOW_DECAY",
-            "timer": 600
+            "timer": 60
           }
         ]
       }
@@ -73,14 +85,14 @@ It supports **JSON Schema**, offering autocompletion in generic code editors (VS
 }
 ```
 
-## 💻 Commands
+## Commands
 Commands require OP Level 2.
 
 - `/sgm info`: Displays the active Zone and protection rules at your current position.
 - `/sgm reload`: Reloads the configuration file from disk.
 - `/sgm memory`: (Debug) Displays current active block checks in the chunk controller.
 
-## 📦 Installation
+## Installation
 1. Download the `.jar` file.
 2. Drop it into your server's `/mods` folder.
 3. (Optional) Install on client for visual sync (better tooltips/feedback), but the mod works **Server-Side Only**.
