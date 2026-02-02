@@ -34,7 +34,10 @@ public class LifecycleManager {
                         }
 
                         // Support OK - Respawn
-                        level.setBlock(block.pos, block.state, 3);
+                        // Flag 18 = 16 (NO_NEIGHBOR_REACTIONS) + 2 (UPDATE_CLIENTS)
+                        // This prevents multi-blocks (doors) from self-destructing if their partner is
+                        // missing
+                        level.setBlock(block.pos, block.state, 18);
                         data.removeDecayingBlock(block.pos);
                         level.destroyBlockProgress(block.pos.hashCode(), block.pos, -1);
                         SGM.LOGGER.debug("Respawned block at {}", block.pos);
@@ -64,7 +67,7 @@ public class LifecycleManager {
                     if (block.strategy == DropStrategy.NORMAL) {
                         level.destroyBlock(block.pos, true);
                     } else {
-                        level.setBlock(block.pos, Blocks.AIR.defaultBlockState(), 3);
+                        level.setBlock(block.pos, Blocks.AIR.defaultBlockState(), 18);
                     }
                     // Clear visual cracks
                     level.destroyBlockProgress(block.pos.hashCode(), block.pos, -1);

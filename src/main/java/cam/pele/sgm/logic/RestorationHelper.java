@@ -29,6 +29,7 @@ public class RestorationHelper {
         });
 
         // Manually set to AIR to simulate destruction without drops
-        level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+        // Flag 18 = 16 (NO_NEIGHBOR_REACTIONS) + 2 (UPDATE_CLIENTS)
+        level.setBlock(pos, Blocks.AIR.defaultBlockState(), 18);
     }
 }

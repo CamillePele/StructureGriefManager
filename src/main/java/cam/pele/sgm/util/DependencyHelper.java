@@ -45,6 +45,14 @@ public class DependencyHelper {
         // 1. Save current state
         BlockState originalState = level.getBlockState(sourcePos);
 
+        // 0. Pre-check: Handle explict multi-block partners (Beds, Doors)
+        BlockPos partnerPos = getMultiBlockPartner(level, sourcePos, originalState);
+        if (partnerPos != null && !visited.contains(partnerPos)) {
+            // Force visit partner BEFORE touching current block
+            BlockState partnerState = level.getBlockState(partnerPos);
+            processDependentBlock(level, partnerPos, partnerState, sourceTimer, visited);
+        }
+
         // 2. Simulation: Temporarily remove block to trigger dependency checks.
         // Flags: 16 (prevent neighbor updates), 4 (prevent rerender).
         // This allows checking dependent blocks without causing visual glitches or
@@ -109,5 +117,25 @@ public class DependencyHelper {
 
             RestorationHelper.scheduleRestoration(level, pos, state, timer);
         }
+    }
+
+    private static BlockPos getMultiBlockPartner(ServerLevel level, BlockPos pos, BlockState state) {
+        if (state.getBlock() instanceof net.minecraft.world.level.block.BedBlock) {
+            net.minecraft.world.level.block.state.properties.BedPart part = state
+                    .getValue(net.minecraft.world.level.block.BedBlock.PART);
+            Direction facing = state.getValue(net.minecraft.world.level.block.BedBlock.FACING);
+            return (part == net.minecraft.world.level.block.state.properties.BedPart.FOOT) ? pos.relative(facing)
+                    : pos.relative(facing.getOpposite());
+        }
+
+        if (state
+                .hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.DOUBLE_BLOCK_HALF)) {
+            net.minecraft.world.level.block.state.properties.DoubleBlockHalf half = state
+                    .getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.DOUBLE_BLOCK_HALF);
+            return (half == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) ? pos.above()
+                    : pos.below();
+        }
+
+        return null;
     }
 }
