@@ -24,7 +24,14 @@ public class PlaceHandler {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         net.minecraft.server.level.ServerLevel level = (net.minecraft.server.level.ServerLevel) event.getLevel();
         // Calculate the position where the block WOULD be placed
-        net.minecraft.core.BlockPos targetPos = event.getPos().relative(event.getFace());
+        // Use BlockPlaceContext to handle replaceable blocks (snow, grass, flowers)
+        // correctly
+        net.minecraft.world.item.context.UseOnContext useOnContext = new net.minecraft.world.item.context.UseOnContext(
+                player, event.getHand(), event.getHitVec());
+        net.minecraft.world.item.context.BlockPlaceContext placeContext = new net.minecraft.world.item.context.BlockPlaceContext(
+                useOnContext);
+        // Note: getClickedPos handles replacement logic automatically
+        net.minecraft.core.BlockPos targetPos = placeContext.getClickedPos();
 
         // Pass level and player to evaluatePlace
         RuleResult result = RuleEvaluationService.evaluatePlace(level, player, targetPos, event.getItemStack());
@@ -44,8 +51,12 @@ public class PlaceHandler {
 
                 data.addDecayingBlock(new cam.pele.sgm.data.DecayingBlock(targetPos, targetTime,
                         cam.pele.sgm.config.model.DropStrategy.NORMAL));
-                // SGM.LOGGER.debug("Block scheduled for decay at {} in {} ticks", targetPos,
-                // result.timer());
+
+                // Sync to clients
+                cam.pele.sgm.network.SgmNetwork.CHANNEL.send(
+                        net.minecraftforge.network.PacketDistributor.TRACKING_CHUNK.with(() -> chunk),
+                        new cam.pele.sgm.network.ClientBoundDecayUpdatePacket(targetPos, true));
+
                 chunk.setUnsaved(true);
             });
         }

@@ -17,5 +17,7 @@ public class SgmNetwork {
         int id = 0;
         CHANNEL.registerMessage(id++, ClientBoundZoneSyncPacket.class, ClientBoundZoneSyncPacket::encode,
                 ClientBoundZoneSyncPacket::decode, ClientBoundZoneSyncPacket::handle);
+        CHANNEL.registerMessage(id++, ClientBoundDecayUpdatePacket.class, ClientBoundDecayUpdatePacket::encode,
+                ClientBoundDecayUpdatePacket::new, ClientBoundDecayUpdatePacket::handle);
     }
 }

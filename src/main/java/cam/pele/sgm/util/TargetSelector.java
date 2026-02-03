@@ -22,6 +22,8 @@ public class TargetSelector {
      * - @container : Blocks with TileEntities (Chests, Furnaces, etc.).
      * - @gravity : Falling blocks (Sand, Gravel).
      * - @redstone : Signal sources (Levers, Buttons).
+     * - @tab:<id> : Blocks belonging to a creative tab (e.g.
+     * "@tab:building_blocks").
      * - Tags: "#namespace:tag_name"
      * - Regex/IDs: "minecraft:.*_log"
      */
@@ -94,6 +96,32 @@ public class TargetSelector {
                 // 4. Redstone (Mécanismes)
                 if (macro.equals("@redstone")) {
                     if (state.isSignalSource())
+                        return true;
+                    continue;
+                }
+
+                // 5. Creative Tabs (Dynamic)
+                // Syntax: "@tab:building_blocks", "@tab:redstone_blocks", "@tab:combat"
+                if (macro.startsWith("@tab:")) {
+                    String tabName = macro.substring(5); // Remove "@tab:" prefix
+                    net.minecraft.world.item.Item item = state.getBlock().asItem();
+
+                    if (item == net.minecraft.world.item.Items.AIR) {
+                        continue; // Technical blocks have no tab
+                    }
+
+                    // Check against registry
+                    boolean inTab = net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB.stream()
+                            .anyMatch(tab -> {
+                                net.minecraft.resources.ResourceLocation key = net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB
+                                        .getKey(tab);
+                                if (key != null && key.getPath().equalsIgnoreCase(tabName)) {
+                                    return tab.contains(new net.minecraft.world.item.ItemStack(item));
+                                }
+                                return false;
+                            });
+
+                    if (inTab)
                         return true;
                     continue;
                 }

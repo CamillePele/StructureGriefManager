@@ -85,6 +85,12 @@ public class LifecycleManager {
                     // Clear visual cracks
                     level.destroyBlockProgress(block.pos.hashCode(), block.pos, -1);
                     SGM.LOGGER.debug("Decayed block at {}", block.pos);
+
+                    // Sync to clients (removal)
+                    cam.pele.sgm.network.SgmNetwork.CHANNEL.send(
+                            net.minecraftforge.network.PacketDistributor.TRACKING_CHUNK.with(() -> chunk),
+                            new cam.pele.sgm.network.ClientBoundDecayUpdatePacket(block.pos, false));
+
                     decayingIterator.remove();
                     dirty = true;
                 } else {

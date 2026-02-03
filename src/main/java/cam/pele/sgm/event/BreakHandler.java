@@ -29,6 +29,9 @@ public class BreakHandler {
         chunk.getCapability(SgmCapEvents.CHUNK_DATA).ifPresent(data -> {
             if (data.removeDecayingBlock(event.getPos())) {
                 wasDecaying.set(true);
+                cam.pele.sgm.network.SgmNetwork.CHANNEL.send(
+                        net.minecraftforge.network.PacketDistributor.TRACKING_CHUNK.with(() -> chunk),
+                        new cam.pele.sgm.network.ClientBoundDecayUpdatePacket(event.getPos(), false));
                 chunk.setUnsaved(true);
             }
         });
