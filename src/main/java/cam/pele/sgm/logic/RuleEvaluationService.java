@@ -40,7 +40,7 @@ public class RuleEvaluationService {
             return RuleResult.ALLOWED;
 
         for (RuleDefinition rule : zone.rules.breakRules) {
-            if (TargetSelector.matches(state, rule.targets)) {
+            if (TargetSelector.matches(state, rule.targets, rule.blacklist)) {
                 if (rule.action == RuleAction.DENY)
                     return RuleResult.DENIED;
 
@@ -85,7 +85,7 @@ public class RuleEvaluationService {
             return RuleResult.ALLOWED;
 
         for (RuleDefinition rule : zone.rules.placeRules) {
-            if (TargetSelector.matches(state, rule.targets)) {
+            if (TargetSelector.matches(state, rule.targets, rule.blacklist)) {
                 if (rule.action == RuleAction.DENY)
                     return RuleResult.DENIED;
 

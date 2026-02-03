@@ -36,6 +36,12 @@
         "action": {
           "$ref": "#/$defs/RuleAction"
         },
+        "blacklist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "targets": {
           "type": "array",
           "items": {
@@ -134,6 +140,9 @@
   "additionalProperties": false,
   "description": "Hover over properties to see details.",
   "properties": {
+    "$schema": {
+      "type": "string"
+    },
     "settings": {
       "$ref": "#/$defs/SgmSettings"
     },

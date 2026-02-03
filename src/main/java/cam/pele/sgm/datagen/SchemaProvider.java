@@ -43,12 +43,6 @@ public class SchemaProvider implements DataProvider {
         configBuilder.with(Option.DEFINITIONS_FOR_ALL_OBJECTS);
         configBuilder.with(Option.FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT);
 
-        // Important: Ignore "$schema" field during generation to avoid useless
-        // recursion
-        configBuilder.forFields()
-                .withIgnoreCheck(field -> field.getName().equals("schema")
-                        && field.getDeclaringType().getErasedType() == SgmConfig.class);
-
         SchemaGenerator generator = new SchemaGenerator(configBuilder.build());
 
         // 2. Generate JsonNode for root class SgmConfig

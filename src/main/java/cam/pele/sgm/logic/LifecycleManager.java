@@ -38,6 +38,19 @@ public class LifecycleManager {
                         // This prevents multi-blocks (doors) from self-destructing if their partner is
                         // missing
                         level.setBlock(block.pos, block.state, 18);
+
+                        // Restore Block Entity Data
+                        if (block.nbt != null) {
+                            net.minecraft.world.level.block.entity.BlockEntity be = level.getBlockEntity(block.pos);
+                            if (be != null) {
+                                be.load(block.nbt);
+                                be.setChanged();
+                                // Force block update to sync with client (Flag 3 = Block Update + Send to
+                                // Clients)
+                                level.sendBlockUpdated(block.pos, block.state, block.state, 3);
+                            }
+                        }
+
                         data.removeDecayingBlock(block.pos);
                         level.destroyBlockProgress(block.pos.hashCode(), block.pos, -1);
                         SGM.LOGGER.debug("Respawned block at {}", block.pos);

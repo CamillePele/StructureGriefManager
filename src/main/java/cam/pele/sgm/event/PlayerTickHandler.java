@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -33,15 +33,28 @@ public class PlayerTickHandler {
         ServerPlayer player = (ServerPlayer) event.player;
         Optional<ZoneConfig> activeZone = ZoneDetectionService.detectZone(player);
 
-        List<String> deniedTargets = new ArrayList<>();
+        List<ClientBoundZoneSyncPacket.SyncedRule> deniedBreakRules = new ArrayList<>();
+        List<ClientBoundZoneSyncPacket.SyncedRule> deniedPlaceRules = new ArrayList<>();
+
         if (activeZone.isPresent()) {
             ZoneConfig zone = activeZone.get();
-            if (zone.rules != null && zone.rules.breakRules != null) {
-                for (RuleDefinition rule : zone.rules.breakRules) {
-                    // Syncs denied blocks to the client for rendering visual feedback.
-                    // Only DENY actions are relevant for visual feedback (red overlay/hardness).
-                    if (rule.action == RuleAction.DENY) {
-                        deniedTargets.addAll(rule.targets);
+            if (zone.rules != null) {
+                // Break Rules
+                if (zone.rules.breakRules != null) {
+                    for (RuleDefinition rule : zone.rules.breakRules) {
+                        if (rule.action == RuleAction.DENY) {
+                            deniedBreakRules
+                                    .add(new ClientBoundZoneSyncPacket.SyncedRule(rule.targets, rule.blacklist));
+                        }
+                    }
+                }
+                // Place Rules
+                if (zone.rules.placeRules != null) {
+                    for (RuleDefinition rule : zone.rules.placeRules) {
+                        if (rule.action == RuleAction.DENY) {
+                            deniedPlaceRules
+                                    .add(new ClientBoundZoneSyncPacket.SyncedRule(rule.targets, rule.blacklist));
+                        }
                     }
                 }
             }
@@ -49,6 +62,6 @@ public class PlayerTickHandler {
 
         // Send update packet to client
         SgmNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
-                new ClientBoundZoneSyncPacket(deniedTargets));
+                new ClientBoundZoneSyncPacket(deniedBreakRules, deniedPlaceRules));
     }
 }

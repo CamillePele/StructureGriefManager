@@ -88,7 +88,9 @@ public class SgmConfigManager {
 
         // 2. Place Rules
         RuleDefinition allowDecay = new RuleDefinition();
-        allowDecay.targets = Collections.singletonList("*");
+        // Demonstration: Allow placing non-solids (torches) and falling blocks
+        // (scaffolding/sand)
+        allowDecay.targets = java.util.Arrays.asList("@non_solid", "@gravity");
         allowDecay.action = RuleAction.ALLOW_DECAY;
         allowDecay.timer = 60; // As requested
 

@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = SGM.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BreakHandler {
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = net.minecraftforge.eventbus.api.EventPriority.HIGHEST)
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (event.getLevel().isClientSide() || !(event.getPlayer() instanceof ServerPlayer))
             return;
