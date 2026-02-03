@@ -23,6 +23,9 @@ public class ZoneConfig {
     public Bounds bounds = new Bounds();
     public RuleSet rules = new RuleSet();
 
+    @SerializedName("padding")
+    public int padding = 2; // Par défaut : 2 blocs de marge autour des murs
+
     @SerializedName("respawn_time")
     /** Override global respawn time for this zone in ticks. */
     public Integer respawnTime = null;

@@ -89,6 +89,10 @@ public class SgmCommand {
             context.getSource().sendSuccess(() -> Component.literal("§e- Name: " + zone.name), false);
             context.getSource().sendSuccess(() -> Component.literal("§e- Type: " + zone.type), false);
             context.getSource().sendSuccess(() -> Component.literal("§e- Priority: " + zone.priority), false);
+            context.getSource().sendSuccess(() -> Component.literal("§e- Padding: " + zone.padding), false);
+            if (zone.type == cam.pele.sgm.config.model.ZoneType.STRUCTURE) {
+                context.getSource().sendSuccess(() -> Component.literal("§7(Precise Detection active)"), false);
+            }
         } else {
             context.getSource().sendSuccess(() -> Component.literal("§7[SGM] No active zone here."), false);
         }
